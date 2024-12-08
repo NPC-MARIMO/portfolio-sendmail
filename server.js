@@ -1,0 +1,47 @@
+const express = require("express")
+const app = express()
+const transporter = require("./utils/transporter");
+
+require('dotenv').config();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const PORT = process.env.PORT || 5000
+
+app.post("/send-otp", async(req, res) => {
+    const { name, email, message } = req.body;
+
+    if(!name || !email || !message) {
+        return res  .status(404).json({
+            success: false,
+            message: "email not sent"
+        })
+    }
+
+    const mailOptions = {
+        from: "shivangbhaiisgreat@gmail",
+        to: req.body.email , 
+        subject: "Mosshead | Shivang",
+        text: `Hello ${req.body.name}!, I have recieved you message from our Portfolio website that ${req.body.message}, I'd like to help you in create any project, so I'll create you within 2 or 3 working days. We are happy to work with you. Thank You for contacting us! `,
+    } 
+    
+    try {
+
+        let sendingMail = await transporter.sendMail(mailOptions)
+
+        return res.status(200).json({
+            success : true, 
+            message: "email sent successfully",
+            data: sendingMail
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+}); 
+
+
+app.listen(PORT , () => {
+    console.log(`App listening on port ${PORT}`)
+})
