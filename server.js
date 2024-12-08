@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const transporter = require("./utils/transporter");
+const cors = require("cors")
 
 require('dotenv').config();
 
